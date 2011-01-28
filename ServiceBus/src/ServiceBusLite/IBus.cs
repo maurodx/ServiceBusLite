@@ -1,7 +1,10 @@
+using ServiceBusLite.Messages;
+
 namespace ServiceBusLite
 {
     public interface IBus
     {
-        void Publish<TMessage>(TMessage message);
+        void Publish(IMessage message);
+        //void Publish<TMessage>(TMessage message) where TMessage : IMessage;
     }
 }

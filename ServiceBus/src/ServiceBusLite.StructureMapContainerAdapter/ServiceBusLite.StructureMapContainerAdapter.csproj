@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{136F39BA-DEEF-4DCC-A091-C77A05B3B9B5}</ProjectGuid>
+    <ProjectGuid>{36C67AE8-A660-4FC6-B3E4-53C008B42800}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ServiceBusLite</RootNamespace>
-    <AssemblyName>ServiceBusLite</AssemblyName>
+    <RootNamespace>ServiceBusLite.StructureMapContainerAdapter</RootNamespace>
+    <AssemblyName>ServiceBusLite.StructureMapContainerAdapter</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -34,6 +34,12 @@
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\..\..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
+    <Reference Include="StructureMap">
+      <HintPath>..\..\..\packages\structuremap.2.6.1.0\lib\StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMapAdapter">
+      <HintPath>..\..\..\packages\CommonServiceLocator.StructureMapAdapter.1.1\lib\StructureMapAdapter.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,19 +49,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bus.cs" />
-    <Compile Include="Configuration\IContainerAdapter.cs" />
-    <Compile Include="Configuration\ServiceBusLiteConfigurator.cs" />
-    <Compile Include="Handlers\IMessageHandler.cs" />
-    <Compile Include="Handlers\MessageHandler.cs" />
-    <Compile Include="IBus.cs" />
-    <Compile Include="Messages\IMessage.cs" />
+    <Compile Include="StructureMapContainerAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ServiceBusLite\ServiceBusLite.csproj">
+      <Project>{136F39BA-DEEF-4DCC-A091-C77A05B3B9B5}</Project>
+      <Name>ServiceBusLite</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

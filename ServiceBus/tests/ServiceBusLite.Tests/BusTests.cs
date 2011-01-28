@@ -2,7 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
+using ServiceBusLite.Handlers;
+using ServiceBusLite.Messages;
+using StructureMap;
+using StructureMap.Configuration.DSL;
 
 namespace ServiceBusLite.Tests
 {
@@ -10,16 +15,28 @@ namespace ServiceBusLite.Tests
     public class BusTests
     {
         [Test]
-        [ExpectedException(typeof(NotImplementedException))]
-        public void PublishMessage()
+        public void TestPublish()
         {
-            IBus bus = new Bus();
-            bus.Publish(new TestMessage{Message = "TestMessage"});
+            IContainer container = new Container();
+            ServiceBusLiteConfigurator.Using(new StructureMapContainerAdapter.StructureMapContainerAdapter(container))
+                .RegisterHandler<IMessageHandler, MyHandler>();
+
+            container.AssertConfigurationIsValid();
+            var bus = container.GetInstance<IBus>();
+            bus.Publish(new MyMessage{Body = "Hello World"});
         }
     }
 
-    public class TestMessage
+    public class MyMessage : IMessage
     {
-        public string Message { get; set; }
+        public string Body { get; set; }
+    }
+
+    public class MyHandler : MessageHandler<MyMessage>
+    {
+        public override void Handle(MyMessage message)
+        {
+            Console.WriteLine(message.Body);
+        }
     }
 }
