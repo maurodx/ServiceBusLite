@@ -1,5 +1,6 @@
 using System;
 using System.Messaging;
+using System.Threading;
 using NUnit.Framework;
 
 namespace ServiceBusLite.Tests
@@ -18,8 +19,12 @@ namespace ServiceBusLite.Tests
 
             requestor.Send(new Message
                                {
+                                   Label = "RequestReplyTest",
                                    Body = "Hello World"
                                });
+
+            Thread.Sleep(3000); //give time to publish and use the replier...
+
             Message message = requestor.ReceiveSync();
             
             Assert.That(message.Body.Equals("Hello World"));
@@ -30,6 +35,7 @@ namespace ServiceBusLite.Tests
     {
         void Send(Message message);
         Message ReceiveSync();
+
     }
 
     public class Requestor : IRequestor
@@ -43,6 +49,9 @@ namespace ServiceBusLite.Tests
 
             _replyQueue.MessageReadPropertyFilter.SetAll();
             ((XmlMessageFormatter)_replyQueue.Formatter).TargetTypeNames = new string[]{"System.String,mscorlib"};
+
+            _requestQueue.MessageReadPropertyFilter.SetAll();
+            ((XmlMessageFormatter)_requestQueue.Formatter).TargetTypeNames = new string[] { "System.String,mscorlib" };
         }
         public void Send(Message message)
         {
@@ -52,7 +61,7 @@ namespace ServiceBusLite.Tests
 
         public Message ReceiveSync()
         {
-            Message replyMessage = _requestQueue.Receive();
+            Message replyMessage = _replyQueue.Receive(); //if your not using a replier - then this could read back from the _requestQueue
             return replyMessage;
         }
     }
