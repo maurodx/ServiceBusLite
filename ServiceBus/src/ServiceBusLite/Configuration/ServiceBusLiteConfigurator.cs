@@ -1,4 +1,6 @@
+using System;
 using Microsoft.Practices.ServiceLocation;
+using ServiceBusLite.Handlers;
 
 namespace ServiceBusLite
 {
@@ -9,19 +11,22 @@ namespace ServiceBusLite
             return new ServiceBusLiteConfig(adapter);
         }
     }
+
     public class ServiceBusLiteConfig
     {
         private readonly IContainerAdapter _adapter;
         public ServiceBusLiteConfig(IContainerAdapter adapter)
         {
             _adapter = adapter;
-            _adapter.Initialize();
+            _adapter.Register(typeof (IContainerAdapter), adapter.GetType());
+            _adapter.Register<IHandlerRegistrarService, HandlerRegistrarService>();
+            _adapter.Register<IBus, Bus>();
         }
 
-        public ServiceBusLiteConfig  RegisterHandler<TService, TImplementation>()
+        public ServiceBusLiteConfig RegisterHandler<TMessageHandler>() where TMessageHandler : IMessageHandler
         {
-            _adapter.Register<TService, TImplementation>();
+            _adapter.RegisterSingleton<IMessageHandler, TMessageHandler>();
             return this;
-        } 
+        }
     }
 }

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using ServiceBusLite.Handlers;
 using ServiceBusLite.Messages;
 
 namespace ServiceBusLite
@@ -5,6 +7,6 @@ namespace ServiceBusLite
     public interface IBus
     {
         void Publish(IMessage message);
-        //void Publish<TMessage>(TMessage message) where TMessage : IMessage;
+        IList<IMessageHandler> GetHandlersFor(IMessage message);
     }
 }

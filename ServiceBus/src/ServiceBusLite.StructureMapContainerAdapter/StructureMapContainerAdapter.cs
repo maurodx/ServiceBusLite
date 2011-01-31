@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Microsoft.Practices.ServiceLocation;
 using ServiceBusLite.Handlers;
 using ServiceBusLite.Messages;
 using StructureMap;
@@ -12,18 +10,11 @@ namespace ServiceBusLite.StructureMapContainerAdapter
 {
     public class StructureMapContainerAdapter : IContainerAdapter
     {
-        private IContainer _container;
-        private StructureMapServiceLocator _serviceLocator;
+        private readonly IContainer _container;
         
         public StructureMapContainerAdapter(IContainer container)
         {
             _container = container;            
-        }
-
-        public void Initialize()
-        {
-            _serviceLocator = new StructureMapServiceLocator(_container);
-            _container.Configure(c => c.For<IBus>().Singleton().Use<Bus>().OnCreation(i => i.Initialize(this)));
         }
 
         public void RegisterSingleton(Type service, Type implementation)
@@ -44,34 +35,16 @@ namespace ServiceBusLite.StructureMapContainerAdapter
         public void Register<TService, TImplementation>()
         {
             Register(typeof(TService), typeof(TImplementation));
+        }   
+
+        public TImplementation GetInstance<TImplementation>()
+        {
+            return _container.GetInstance<TImplementation>();
         }
 
-        public TImplementation GetInstance<TImplementation>(Type service)
+        public IList<TImplementation> GetAllInstances<TImplementation>()
         {
-            return (TImplementation)_serviceLocator.GetInstance(service);
-        }
-
-        public TImplementation GetInstance<TImplementation, TService>()
-        {
-            return (TImplementation)_serviceLocator.GetInstance(typeof(TService));
-        }
-
-        public IEnumerable<object> GetAllInstances<TImplementation>()
-        {
-            var results = _serviceLocator.GetAllInstances(typeof(TImplementation));
-            return results;
-        }
-
-        public IEnumerable<IMessageHandler> GetHandlersFor(IMessage messageType)
-        {
-            var results = GetAllInstances<IMessageHandler>().ToList();
-            foreach(var result in results)
-            {
-                var handler = result as IMessageHandler;
-                if (handler != null)
-                    if (handler.CanHandle(messageType.GetType()))
-                        yield return handler;
-            }
+            return _container.GetAllInstances<TImplementation>();
         }
     }
 }

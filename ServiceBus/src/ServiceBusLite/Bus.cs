@@ -10,22 +10,27 @@ namespace ServiceBusLite
 {
     public class Bus : IBus
     {
-        private  IContainerAdapter _containerAdapter;
-        
-        public void Initialize(IContainerAdapter containerAdapter)
-        {
-            _containerAdapter = containerAdapter;
-        }
+        private readonly IHandlerRegistrarService _registrarService;
 
+        public Bus(IHandlerRegistrarService registrarService)
+        {
+             _registrarService = registrarService;
+        }
 
         public void Publish(IMessage message)
         {
-            var handlers = _containerAdapter.GetHandlersFor(message);
+            var handlers = GetHandlersFor(message);
+            
             foreach (var handler in handlers)
             {
-                if (handler.CanHandle(message.GetType()))
-                    handler.Handle(message);
+                handler.Handle(message);
             }
+        }
+
+        public IList<IMessageHandler> GetHandlersFor(IMessage message)
+        {
+            var handlers = _registrarService.GetHandlersFor(message);
+            return handlers.Where(handler => handler.CanHandle(message.GetType())).ToList();
         }
     }
 }

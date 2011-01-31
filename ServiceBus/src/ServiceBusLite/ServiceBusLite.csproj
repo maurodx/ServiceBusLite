@@ -46,6 +46,8 @@
     <Compile Include="Bus.cs" />
     <Compile Include="Configuration\IContainerAdapter.cs" />
     <Compile Include="Configuration\ServiceBusLiteConfigurator.cs" />
+    <Compile Include="Handlers\HandlerRegistrarService.cs" />
+    <Compile Include="Handlers\IHandlerRegistrarService.cs" />
     <Compile Include="Handlers\IMessageHandler.cs" />
     <Compile Include="Handlers\MessageHandler.cs" />
     <Compile Include="IBus.cs" />

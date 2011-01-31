@@ -13,12 +13,7 @@ namespace ServiceBusLite
         void Register(Type service, Type implementation);
         void Register<TService, TImplementation>();
 
-        void Initialize();
-
-        TImplementation GetInstance<TImplementation>(Type service);
-        TImplementation GetInstance<TImplementation, TService>();
-        IEnumerable<object> GetAllInstances<TImplmentation>();
-
-        IEnumerable<IMessageHandler> GetHandlersFor(IMessage messageType);
+        TImplementation GetInstance<TImplementation>();
+        IList<TImplementation> GetAllInstances<TImplementation>();
     }
 }
